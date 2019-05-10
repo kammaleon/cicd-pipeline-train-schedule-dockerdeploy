@@ -9,28 +9,26 @@ pipeline {
             }
         }
         
-        stage ('Build Docker image') {
+        stage ('Build Docker Image') {
             when {
                branch 'master' 
             }   
             step {
               script {
-                app = docker.build ("kymmi/train-schedule") 
+                app = docker.build("kymmi/train-schedule") 
                 app.inside {
-                    sh 'echo $ curl (localhost:8080)'
+                    sh 'echo $(curl localhost:8080)'
                 }                
             }
          }
       }
-        
-        stage ('Push Docker Image'){
+       stage ('Push Docker Image'){
 when {
     branch 'master'
- }
- 
-  steps {
-         script {
-                  docker.withRegistry('https://registry.hub.docker.com', 'docker.com', 'docker_hub_login') {
+}
+ steps {
+     script {
+              docker.withRegistry('https://registry.hub.docker.com', 'docker.com', 'docker_hub_login') {
           app.push("${env.BUILD_NUMBER}")
           app.push("latest")
                     }
